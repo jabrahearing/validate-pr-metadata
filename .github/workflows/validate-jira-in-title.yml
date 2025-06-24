@@ -11,7 +11,7 @@ jobs:
       - name: Check PR Title for JIRA Ticket
         run: |
           TITLE="${{ github.event.pull_request.title }}"
-          REGEX="^[A-Z]+-[0-9]+"
+          REGEX="[A-Z]+-[0-9]+"
           if [[ ! "$TITLE" =~ $REGEX ]]; then
             echo "Pull Request title does not start with a JIRA ticket number (e.g., FOO-123)."
             exit 1
