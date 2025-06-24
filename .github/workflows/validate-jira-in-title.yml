@@ -2,7 +2,14 @@ name: PR Title JIRA Check
 
 on:
   pull_request:
-    types: [opened, edited, enqueued]
+    types: 
+      - opened
+      - reopened
+      - ready_for_review
+      - edited
+      - synchronize
+  merge_group:
+    types: [checks_requested]
 
 jobs:
   validate-pr-title:
