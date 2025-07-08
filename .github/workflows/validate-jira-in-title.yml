@@ -16,14 +16,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Validate PR title
-        run: |
-          # This regex looks for a pattern like XXX-DDDD (e.g., JIRAPROJECT-DIGITS) anywhere in the string.
-          # It's case-insensitive and allows for multiple such patterns separated by commas or other characters.
           title_regex='[A-Z]{1,}-[0-9]+'
-          if [[ "${{ github.event.pull_request.title }}" =~ $title_regex ]]; then
+          RAW_PR_TITLE="${{ github.event.pull_request.title }}"
+          printf -v SHELL_SAFE_PR_TITLE '%q' "$RAW_PR_TITLE"
+          eval "PR_TITLE_FOR_REGEX=$SHELL_SAFE_PR_TITLE"
+
+          if [[ "$PR_TITLE_FOR_REGEX" =~ $title_regex ]]; then
             echo "PR title contains a JIRA ticket number."
           else
             echo "PR title does not contain a JIRA ticket number in the expected format (e.g., JIRAPROJECT-DIGITS)."
-            echo "The title was: ${{ github.event.pull_request.title }}"
+            echo "The title was:'$PR_TITLE_FOR_REGEX'"
             exit 1
           fi
