@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Validate PR title
+        run: |
           title_regex='[A-Z]{1,}-[0-9]+'
           RAW_PR_TITLE="${{ github.event.pull_request.title }}"
           printf -v SHELL_SAFE_PR_TITLE '%q' "$RAW_PR_TITLE"
