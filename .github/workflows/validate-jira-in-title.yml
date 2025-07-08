@@ -16,16 +16,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Validate PR title
+        env:
+          PR_TITLE_ENV: ${{ github.event.pull_request.title }}
         run: |
           title_regex='[A-Z]{1,}-[0-9]+'
-          RAW_PR_TITLE="${{ github.event.pull_request.title }}"
-          printf -v SHELL_SAFE_PR_TITLE '%q' "$RAW_PR_TITLE"
-          eval "PR_TITLE_FOR_REGEX=$SHELL_SAFE_PR_TITLE"
+          PR_TITLE_VAR="$PR_TITLE_ENV"
 
-          if [[ "$PR_TITLE_FOR_REGEX" =~ $title_regex ]]; then
+          if [[ -z "$PR_TITLE_VAR" ]]; then
+            echo "Error: PR title is empty. Cannot validate JIRA ticket."
+            exit 1
+          fi
+
+          if [[ "$PR_TITLE_VAR" =~ $title_regex ]]; then
             echo "PR title contains a JIRA ticket number."
           else
             echo "PR title does not contain a JIRA ticket number in the expected format (e.g., JIRAPROJECT-DIGITS)."
-            echo "The title was:'$PR_TITLE_FOR_REGEX'"
+            echo "The title was: '$PR_TITLE_VAR'"
             exit 1
           fi
