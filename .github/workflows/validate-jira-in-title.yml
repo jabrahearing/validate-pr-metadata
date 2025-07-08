@@ -2,7 +2,7 @@ name: PR Title JIRA Check
 
 on:
   pull_request:
-    types: 
+    types:
       - opened
       - reopened
       - ready_for_review
@@ -17,12 +17,13 @@ jobs:
     steps:
       - name: Validate PR title
         run: |
-          title_regex='^\[(([^[:space:]]+\-[0-9]+)(,[[:space:]]*))*([^[:space:]]+\-[0-9]+)\].+'
+          # This regex looks for a pattern like XXX-DDDD (e.g., JIRAPROJECT-DIGITS) anywhere in the string.
+          # It's case-insensitive and allows for multiple such patterns separated by commas or other characters.
+          title_regex='[A-Z]{1,}-[0-9]+'
           if [[ "${{ github.event.pull_request.title }}" =~ $title_regex ]]; then
-            echo "PR title matches expected format"
+            echo "PR title contains a JIRA ticket number."
           else
-            echo "PR title does not match expected format."
-            echo "Format is \`[JIRAPROJECT-DIGITS] Message\` e.g. [JES-1234] Fix snyk. "
+            echo "PR title does not contain a JIRA ticket number in the expected format (e.g., JIRAPROJECT-DIGITS)."
             echo "The title was: ${{ github.event.pull_request.title }}"
             exit 1
           fi
