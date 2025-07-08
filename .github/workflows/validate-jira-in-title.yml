@@ -15,11 +15,14 @@ jobs:
   validate-pr-title:
     runs-on: ubuntu-latest
     steps:
-      - name: Check PR Title for JIRA Ticket
+      - name: Validate PR title
         run: |
-          TITLE="${{ github.event.pull_request.title }}"
-          REGEX="[A-Z]+-[0-9]+"
-          if [[ ! "$TITLE" =~ $REGEX ]]; then
-            echo "Pull Request title does not start with a JIRA ticket number (e.g., FOO-123)."
+          title_regex='^\[(([^[:space:]]+\-[0-9]+)(,[[:space:]]*))*([^[:space:]]+\-[0-9]+)\].+'
+          if [[ "${{ github.event.pull_request.title }}" =~ $title_regex ]]; then
+            echo "PR title matches expected format"
+          else
+            echo "PR title does not match expected format."
+            echo "Format is \`[JIRAPROJECT-DIGITS] Message\` e.g. [JES-1234] Fix snyk. "
+            echo "The title was: ${{ github.event.pull_request.title }}"
             exit 1
           fi
