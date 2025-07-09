@@ -13,6 +13,8 @@ on:
 
 jobs:
   validate-pr-title:
+    name: PR Title JIRA Check
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Validate PR title
