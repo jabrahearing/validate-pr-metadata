@@ -8,6 +8,9 @@ on:
       - ready_for_review
       - edited
       - synchronize
+  pull_request_target:
+    types:
+      - edited
   merge_group:
     types: [checks_requested]
 
