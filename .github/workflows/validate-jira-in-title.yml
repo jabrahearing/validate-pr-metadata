@@ -8,9 +8,6 @@ on:
       - ready_for_review
       - edited
       - synchronize
-  pull_request_target:
-    types:
-      - edited
   merge_group:
     types: [checks_requested]
 
@@ -20,7 +17,7 @@ jobs:
     # gtmq_ is a branch prefix used by graphite's merge queue to run CI against but the title of this PR
     # is auto generated and ultimately not used for the commits that get merged, so this workflow is not necessary for those branches
     # https://graphite.dev/docs/merge-queue-optimizations#end-user-experience-when-using-parallel-ci
-    if: (github.event_name == 'pull_request' || github.event_name == 'pull_request_target')  && !startsWith(github.head_ref, 'gtmq_') 
+    if: github.event_name == 'pull_request' && !startsWith(github.head_ref, 'gtmq_') 
     runs-on: ubuntu-latest
     steps:
       - name: Validate PR title
